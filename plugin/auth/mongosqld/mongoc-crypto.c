@@ -15,10 +15,7 @@
 
 // #include "mongoc-config.h"
 
-#ifdef MONGOC_ENABLE_CRYPTO
 
-
-#include "mongoc-log.h"
 #include "mongoc-crypto-private.h"
 #if defined(MONGOC_ENABLE_CRYPTO_LIBCRYPTO)
 #include "mongoc-crypto-openssl-private.h"
@@ -54,7 +51,7 @@ mongoc_crypto_hmac_sha1 (mongoc_crypto_t *crypto,
    crypto->hmac_sha1 (crypto, key, key_len, d, n, md);
 }
 
-bool
+my_bool
 mongoc_crypto_sha1 (mongoc_crypto_t *crypto,
                     const unsigned char *input,
                     const size_t input_len,
@@ -62,4 +59,3 @@ mongoc_crypto_sha1 (mongoc_crypto_t *crypto,
 {
    return crypto->sha1 (crypto, input, input_len, output);
 }
-#endif

@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-
-#if !defined(MONGOC_COMPILATION)
-#error "Only <mongoc.h> can be included directly."
-#endif
-
-#ifdef MONGOC_ENABLE_CRYPTO_CNG
-
 #ifndef MONGOC_CRYPTO_CNG_H
 #define MONGOC_CRYPTO_CNG_H
-
-
-#include "mongoc-macros.h"
-// #include "mongoc-config.h"
-
 
 BSON_BEGIN_DECLS
 
@@ -48,4 +36,3 @@ mongoc_crypto_cng_sha1 (mongoc_crypto_t *crypto,
 BSON_END_DECLS
 
 #endif /* MONGOC_CRYPTO_CNG_H */
-#endif /* MONGOC_ENABLE_CRYPTO_CNG */

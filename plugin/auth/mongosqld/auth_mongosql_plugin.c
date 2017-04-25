@@ -24,8 +24,8 @@
 
 #include <mysql.h>
 #include "bson.h"
-#include "mongoc-scram-private.h"
-#include "mongo-scram.c"
+#include "mongoc-error.h"
+#include "mongoc-scram.c"
 
 #define MAX_MECHANISM_LENGTH 1024
 
@@ -70,7 +70,7 @@ static int mongosql_plugin_client(MYSQL_PLUGIN_VIO *vio, MYSQL_SERVER_AUTH_INFO 
   mechanism = pkt;
   memcpy(&num_conversations, pkt+strlen((const char *)mechanism)+1, 4);
 
-  fprintf(stderr, "MECHANISM IS '%s'", *mechanism);
+  fprintf(stderr, "MECHANISM IS '%s'", mechanism);
 
    /*
 

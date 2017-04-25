@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-// #include "mongoc-config.h"
-
-#ifdef MONGOC_ENABLE_CRYPTO_COMMON_CRYPTO
-
 #include "mongoc-rand.h"
 #include "mongoc-rand-private.h"
 
@@ -49,5 +45,3 @@ mongoc_rand_status (void)
 {
    return 1;
 }
-
-#endif

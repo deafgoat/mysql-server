@@ -17,7 +17,6 @@
 // #include "mongoc-config.h"
 
 
-#ifdef MONGOC_ENABLE_CRYPTO_LIBCRYPTO
 #include "mongoc-crypto-openssl-private.h"
 #include "mongoc-crypto-private.h"
 
@@ -78,5 +77,3 @@ cleanup:
    return rval;
 }
 
-
-#endif

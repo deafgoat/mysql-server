@@ -17,11 +17,6 @@
 #ifndef MONGOC_MEMCMP_PRIVATE_H
 #define MONGOC_MEMCMP_PRIVATE_H
 
-#if !defined(MONGOC_COMPILATION)
-#error "Only <mongoc.h> can be included directly."
-#endif
-
-
 
 // #include "mongoc-config.h"
 

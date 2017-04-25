@@ -16,7 +16,6 @@
 // #include "mongoc-config.h"
 #include "mongoc-crypto-private.h"
 
-#ifdef MONGOC_ENABLE_CRYPTO_COMMON_CRYPTO
 #include "mongoc-crypto-common-crypto-private.h"
 #include <CommonCrypto/CommonHMAC.h>
 #include <CommonCrypto/CommonDigest.h>
@@ -45,6 +44,3 @@ mongoc_crypto_common_crypto_sha1 (mongoc_crypto_t *crypto,
    }
    return false;
 }
-
-
-#endif

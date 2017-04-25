@@ -15,7 +15,6 @@
 
 // #include "mongoc-config.h"
 
-#ifdef MONGOC_ENABLE_CRYPTO_CNG
 #include "mongoc-crypto-private.h"
 #include "mongoc-crypto-cng-private.h"
 #include "mongoc-log.h"
@@ -28,7 +27,7 @@
 #define STATUS_UNSUCCESSFUL ((NTSTATUS) 0xC0000001L)
 
 
-bool
+my_bool
 _mongoc_crypto_cng_hmac_or_hash (BCRYPT_ALG_HANDLE algorithm,
                                  void *key,
                                  size_t key_length,
@@ -41,7 +40,7 @@ _mongoc_crypto_cng_hmac_or_hash (BCRYPT_ALG_HANDLE algorithm,
    BCRYPT_HASH_HANDLE hash = 0;
    ULONG mac_length = 0;
    NTSTATUS status = STATUS_UNSUCCESSFUL;
-   bool retval = false;
+   my_bool retval = FALSE;
    ULONG noop = 0;
 
    status = BCryptGetProperty (algorithm,
@@ -53,7 +52,7 @@ _mongoc_crypto_cng_hmac_or_hash (BCRYPT_ALG_HANDLE algorithm,
 
    if (!NT_SUCCESS (status)) {
       MONGOC_ERROR ("BCryptGetProperty(): OBJECT_LENGTH %x", status);
-      return false;
+      return FALSE;
    }
 
    status = BCryptGetProperty (algorithm,
@@ -65,7 +64,7 @@ _mongoc_crypto_cng_hmac_or_hash (BCRYPT_ALG_HANDLE algorithm,
 
    if (!NT_SUCCESS (status)) {
       MONGOC_ERROR ("BCryptGetProperty(): HASH_LENGTH %x", status);
-      return false;
+      return FALSE;
    }
 
    hash_object_buffer = bson_malloc (hash_object_length);
@@ -95,7 +94,7 @@ _mongoc_crypto_cng_hmac_or_hash (BCRYPT_ALG_HANDLE algorithm,
       goto cleanup;
    }
 
-   retval = true;
+   retval = TRUE;
 
 cleanup:
    if (hash) {

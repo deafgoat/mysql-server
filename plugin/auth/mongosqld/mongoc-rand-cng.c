@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-// #include "mongoc-config.h"
-
-#ifdef MONGOC_ENABLE_SSL_SECURE_CHANNEL
-
 #include "mongoc-rand.h"
 #include "mongoc-rand-private.h"
 
-#include "mongoc.h"
 
 #include <windows.h>
 #include <stdio.h>
@@ -72,4 +67,3 @@ mongoc_rand_status (void)
    return 1;
 }
 
-#endif

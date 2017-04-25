@@ -17,8 +17,6 @@
 
 // #include "mongoc-config.h"
 
-#ifdef MONGOC_ENABLE_CRYPTO
-
 #ifndef MONGOC_CRYPTO_PRIVATE_H
 #define MONGOC_CRYPTO_PRIVATE_H
 
@@ -34,7 +32,7 @@ struct _mongoc_crypto_t {
                       const unsigned char *d,
                       int n,
                       unsigned char *md /* OUT */);
-   bool (*sha1) (mongoc_crypto_t *crypto,
+   my_bool (*sha1) (mongoc_crypto_t *crypto,
                  const unsigned char *input,
                  const size_t input_len,
                  unsigned char *output /* OUT */);
@@ -51,7 +49,7 @@ mongoc_crypto_hmac_sha1 (mongoc_crypto_t *crypto,
                          int n,
                          unsigned char *md /* OUT */);
 
-bool
+my_bool
 mongoc_crypto_sha1 (mongoc_crypto_t *crypto,
                     const unsigned char *input,
                     const size_t input_len,
@@ -60,4 +58,3 @@ mongoc_crypto_sha1 (mongoc_crypto_t *crypto,
 
 BSON_END_DECLS
 #endif /* MONGOC_CRYPTO_PRIVATE_H */
-#endif /* MONGOC_ENABLE_CRYPTO */

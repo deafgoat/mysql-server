@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-
-#if !defined(MONGOC_COMPILATION)
-#error "Only <mongoc.h> can be included directly."
-#endif
-
 // #include "mongoc-config.h"
-
-
-#ifdef MONGOC_ENABLE_CRYPTO_LIBCRYPTO
 
 #ifndef MONGOC_CRYPTO_OPENSSL_PRIVATE_H
 #define MONGOC_CRYPTO_OPENSSL_PRIVATE_H
@@ -47,4 +39,3 @@ mongoc_crypto_openssl_sha1 (mongoc_crypto_t *crypto,
 
 BSON_END_DECLS
 #endif /* MONGOC_CRYPTO_OPENSSL_PRIVATE_H */
-#endif /* MONGOC_ENABLE_CRYPTO_LIBCRYPTO */

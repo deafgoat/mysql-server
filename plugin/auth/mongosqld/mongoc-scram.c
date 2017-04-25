@@ -15,20 +15,14 @@
 
 // #include "mongoc-config.h"
 
-#ifdef MONGOC_ENABLE_CRYPTO
-
 #include <string.h>
 
-#include "mongoc-error.h"
-#include "mongoc-scram-private.h"
-#include "mongoc-rand-private.h"
-#include "mongoc-util-private.h"
-#include "mongoc-uri-private.h"
+#include "mongoc-rand.c"
+#include "mongoc-scram.h"
+#include "mongoc-crypto.c"
+#include "mongoc-b64.c"
 
-#include "mongoc-crypto-private.h"
-#include "mongoc-b64-private.h"
-
-#include "mongoc-memcmp-private.h"
+#include "mongoc-memcmp.c"
 
 #define MONGOC_SCRAM_SERVER_KEY "Server Key"
 #define MONGOC_SCRAM_CLIENT_KEY "Client Key"
@@ -49,7 +43,7 @@ _mongoc_scram_startup ()
 void
 _mongoc_scram_set_pass (mongoc_scram_t *scram, const char *pass)
 {
-   BSON_ASSERT (scram);
+   
 
    if (scram->pass) {
       bson_zero_free (scram->pass, strlen (scram->pass));
@@ -62,7 +56,7 @@ _mongoc_scram_set_pass (mongoc_scram_t *scram, const char *pass)
 void
 _mongoc_scram_set_user (mongoc_scram_t *scram, const char *user)
 {
-   BSON_ASSERT (scram);
+   
 
    bson_free (scram->user);
    scram->user = user ? bson_strdup (user) : NULL;
@@ -72,7 +66,7 @@ _mongoc_scram_set_user (mongoc_scram_t *scram, const char *user)
 void
 _mongoc_scram_init (mongoc_scram_t *scram)
 {
-   BSON_ASSERT (scram);
+   
 
    memset (scram, 0, sizeof *scram);
 
@@ -83,7 +77,7 @@ _mongoc_scram_init (mongoc_scram_t *scram)
 void
 _mongoc_scram_destroy (mongoc_scram_t *scram)
 {
-   BSON_ASSERT (scram);
+   
 
    bson_free (scram->user);
 
@@ -95,7 +89,7 @@ _mongoc_scram_destroy (mongoc_scram_t *scram)
 }
 
 
-static bool
+static my_bool
 _mongoc_scram_buf_write (const char *src,
                          int32_t src_len,
                          uint8_t *outbuf,
@@ -107,14 +101,14 @@ _mongoc_scram_buf_write (const char *src,
    }
 
    if (*outbuflen + src_len >= outbufmax) {
-      return false;
+      return FALSE;
    }
 
    memcpy (outbuf + *outbuflen, src, src_len);
 
    *outbuflen += src_len;
 
-   return true;
+   return TRUE;
 }
 
 
@@ -123,7 +117,7 @@ _mongoc_scram_buf_write (const char *src,
  *
  * note that a= is optional, so we aren't dealing with that here
  */
-static bool
+static my_bool
 _mongoc_scram_start (mongoc_scram_t *scram,
                      uint8_t *outbuf,
                      uint32_t outbufmax,
@@ -132,12 +126,12 @@ _mongoc_scram_start (mongoc_scram_t *scram,
 {
    uint8_t nonce[24];
    const char *ptr;
-   bool rval = true;
+   my_bool rval = TRUE;
 
-   BSON_ASSERT (scram);
-   BSON_ASSERT (outbuf);
-   BSON_ASSERT (outbufmax);
-   BSON_ASSERT (outbuflen);
+   
+   
+   
+   
 
    /* auth message is as big as the outbuf just because */
    scram->auth_message = (uint8_t *) bson_malloc (outbufmax);
@@ -251,7 +245,7 @@ BUFFER:
    goto FAIL;
 
 FAIL:
-   rval = false;
+   rval = FALSE;
 
 CLEANUP:
 
@@ -308,7 +302,7 @@ _mongoc_scram_salt_password (mongoc_scram_t *scram,
 }
 
 
-static bool
+static my_bool
 _mongoc_scram_generate_client_proof (mongoc_scram_t *scram,
                                      uint8_t *outbuf,
                                      uint32_t outbufmax,
@@ -353,12 +347,12 @@ _mongoc_scram_generate_client_proof (mongoc_scram_t *scram,
                         outbufmax - *outbuflen);
 
    if (-1 == r) {
-      return false;
+      return FALSE;
    }
 
    *outbuflen += r;
 
-   return true;
+   return TRUE;
 }
 
 
@@ -368,7 +362,7 @@ _mongoc_scram_generate_client_proof (mongoc_scram_t *scram,
  * Generate client-final-message of the form:
  * c=channel-binding(base64),r=client-nonce|server-nonce,p=client-proof
  */
-static bool
+static my_bool
 _mongoc_scram_step2 (mongoc_scram_t *scram,
                      const uint8_t *inbuf,
                      uint32_t inbuflen,
@@ -395,14 +389,14 @@ _mongoc_scram_step2 (mongoc_scram_t *scram,
 
    uint8_t decoded_salt[MONGOC_SCRAM_B64_HASH_SIZE];
    int32_t decoded_salt_len;
-   bool rval = true;
+   my_bool rval = TRUE;
 
    int iterations;
 
-   BSON_ASSERT (scram);
-   BSON_ASSERT (outbuf);
-   BSON_ASSERT (outbufmax);
-   BSON_ASSERT (outbuflen);
+   
+   
+   
+   
 
    /* all our passwords go through md5 thanks to MONGODB-CR */
    tmp = bson_strdup_printf ("%s:mongo:%s", scram->user, scram->pass);
@@ -606,7 +600,7 @@ BUFFER:
    goto FAIL;
 
 FAIL:
-   rval = false;
+   rval = FALSE;
 
 CLEANUP:
    bson_free (val_r);
@@ -621,7 +615,7 @@ CLEANUP:
 }
 
 
-static bool
+static my_bool
 _mongoc_scram_verify_server_signature (mongoc_scram_t *scram,
                                        uint8_t *verification,
                                        uint32_t len)
@@ -653,7 +647,7 @@ _mongoc_scram_verify_server_signature (mongoc_scram_t *scram,
                        encoded_server_signature,
                        sizeof (encoded_server_signature));
    if (encoded_server_signature_len == -1) {
-      return false;
+      return FALSE;
    }
 
    return (len == encoded_server_signature_len) &&
@@ -661,7 +655,7 @@ _mongoc_scram_verify_server_signature (mongoc_scram_t *scram,
 }
 
 
-static bool
+static my_bool
 _mongoc_scram_step3 (mongoc_scram_t *scram,
                      const uint8_t *inbuf,
                      uint32_t inbuflen,
@@ -681,12 +675,12 @@ _mongoc_scram_step3 (mongoc_scram_t *scram,
    const uint8_t *ptr;
    const uint8_t *next_comma;
 
-   bool rval = true;
+   my_bool rval = TRUE;
 
-   BSON_ASSERT (scram);
-   BSON_ASSERT (outbuf);
-   BSON_ASSERT (outbufmax);
-   BSON_ASSERT (outbuflen);
+   
+   
+   
+   
 
    for (ptr = inbuf; ptr < inbuf + inbuflen;) {
       switch (*ptr) {
@@ -772,7 +766,7 @@ _mongoc_scram_step3 (mongoc_scram_t *scram,
    goto CLEANUP;
 
 FAIL:
-   rval = false;
+   rval = FALSE;
 
 CLEANUP:
    bson_free (val_e);
@@ -782,7 +776,7 @@ CLEANUP:
 }
 
 
-bool
+my_bool
 _mongoc_scram_step (mongoc_scram_t *scram,
                     const uint8_t *inbuf,
                     uint32_t inbuflen,
@@ -791,10 +785,10 @@ _mongoc_scram_step (mongoc_scram_t *scram,
                     uint32_t *outbuflen,
                     bson_error_t *error)
 {
-   BSON_ASSERT (scram);
-   BSON_ASSERT (inbuf);
-   BSON_ASSERT (outbuf);
-   BSON_ASSERT (outbuflen);
+   
+   
+   
+   
 
    scram->step++;
 
@@ -815,11 +809,10 @@ _mongoc_scram_step (mongoc_scram_t *scram,
                       MONGOC_ERROR_SCRAM,
                       MONGOC_ERROR_SCRAM_NOT_DONE,
                       "SCRAM Failure: maximum steps detected");
-      return false;
+      return FALSE;
       break;
    }
 
-   return true;
+   return TRUE;
 }
 
-#endif
